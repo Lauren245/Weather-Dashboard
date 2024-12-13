@@ -1,7 +1,22 @@
 // TODO: Define a City class with name and id properties
+class City {
+  id: string;
+  name: string;
+
+  constructor(id: string, name: string){
+    this.id = id;
+    this.name = name;
+  }
+}
 
 // TODO: Complete the HistoryService class
-class HistoryService {
+class HistoryService extends City{
+  // private city: City;
+  
+  // constructor(city: City){
+  //   this.city = city;
+  // }
+  
   // TODO: Define a read method that reads from the searchHistory.json file
   // private async read() {}
   // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
