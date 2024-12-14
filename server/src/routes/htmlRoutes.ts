@@ -10,5 +10,5 @@ router.get('/', ( _req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '../../../client/dist/index.html'));
 });
 
-
+//add wildcard route
 export default router;
