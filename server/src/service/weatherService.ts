@@ -10,14 +10,14 @@ interface Coordinates {
 class Weather{
   //city, date, icon, iconDescription, tempF, windSpeed, humidity
   city: string;
-  date: number; //this doesn't make much sense to me, but this is the only way I am seeing dates formatted when making a test API call
+  date: string; //this doesn't make much sense to me, but this is the only way I am seeing dates formatted when making a test API call
   icon: string;
   iconDescription: string;
   tempF: number; //this needs to become a float
   windSpeed: number;
   humidity: number;
 
-  constructor(city: string, date: number, icon: string, iconDescription: string, tempF: number, windSpeed: number, humidity: number){
+  constructor(city: string, date: string, icon: string, iconDescription: string, tempF: number, windSpeed: number, humidity: number){
     this.city = city;
     this.date = date;
     this.icon = icon;
@@ -28,6 +28,8 @@ class Weather{
   }
 
 };
+
+//TODO: determine how to reformat dates, and fix temperature values.
 
 // TODO: Complete the WeatherService class
 class WeatherService{
@@ -101,7 +103,7 @@ class WeatherService{
         console.log(`GeocodeQuery = q=${this.cityName}&appid=${this.APIKey}`);
         console.log("--------------------------------------------");
   
-        return `q=${this.cityName}&appid=${this.APIKey}`;
+        return `q=${this.cityName}&appid=${this.APIKey}&units=imperial`;
 
     }catch(error){
       console.log("Error: ", error);
@@ -115,7 +117,7 @@ class WeatherService{
     console.log("running buildWeatherQuery method stub");
     console.log("--------------------------------------------");
 
-    return `lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.APIKey}`;
+    return `lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.APIKey}&units=imperial`;
 
   }
   // TODO: Create fetchAndDestructureLocationData method
@@ -155,10 +157,11 @@ class WeatherService{
       console.log("--------------------------------------------");
       const coordQuery = this.buildWeatherQuery(coordinates);
       const response = await fetch(`${this.baseURL}forecast?${coordQuery}`);
+      console.log(`${this.baseURL}forecast?${coordQuery}`);
 
       //!!! The following two lines may be uneeded outside of testing
       const weatherData = await response.json();
-      console.log(`Weather Data: ${JSON.stringify(weatherData)}`);
+      // console.log(`Weather Data: ${JSON.stringify(weatherData)}`);
 
       return weatherData;
 
@@ -179,8 +182,12 @@ class WeatherService{
         //list is the property returned by the API call that holds all the objects.
         const data = response.list[0]; //This will need to be a weather object
         // console.log(`Current weather: ${JSON.stringify(response.list[0])}`)
+        console.log(`data.dt_txt = ${JSON.stringify(data.dt_txt)}` );
+        console.log(`typeof data.dt_txt = ${typeof(data.dt_txt)}`);
+        let forcastDate: Date = new Date(data.dt_txt);
+        let formattedDate: string = `${forcastDate.getMonth()}/${forcastDate.getDate()}/${forcastDate.getFullYear()}`;
         //data.weather.description is inside an array that only contains one item, hence the weather[0]
-        const currentWeather = new Weather(this.cityName, data.dt_txt, data.weather[0].icon, data.weather[0].description, 
+        const currentWeather = new Weather(this.cityName, formattedDate, data.weather[0].icon, data.weather[0].description, 
                                             data.main.temp, data.wind.speed, data.main.humidity);
         console.log(`currentWeather = ${JSON.stringify(currentWeather)}`); //TEST OUTPUT    
         console.log("--------------------------------------------");    
@@ -202,12 +209,17 @@ class WeatherService{
         let weatherArr: Weather[] = [currentWeather];
         //the first item in the weatherData (at weatherData[0]) has the same content as currentWeather
         //we want 5 days, and we have already added the first day.
-        for(let i = 1; i < 6; i++){
+        //6
+        for(let i = 1; i < 10; i++){
           console.log(`Entering for loop. i = ${i}`);
-          console.log(`WeatherData[i] = ${JSON.stringify(weatherData[i])}`);
+          // console.log(`WeatherData[i] = ${JSON.stringify(weatherData[i])}`);
             let data = weatherData[i];
+            console.log(`data.dt_txt = ${JSON.stringify(data.dt_txt)}` );
+            console.log(`typeof data.dt_txt = ${typeof(data.dt_txt)}`);
+            let forcastDate: Date = new Date(data.dt_txt);
+             let formattedDate: string = `(${forcastDate.getMonth()}/${forcastDate.getDate()}/${forcastDate.getFullYear()})`;
             //data.weather.description is inside an array that only contains one item, hence the weather[0]
-            let weatherObj = new Weather(this.cityName, data.dt_txt, data.weather[0].icon, data.weather[0].description, 
+            let weatherObj = new Weather(this.cityName, formattedDate, data.weather[0].icon, data.weather[0].description, 
                                             data.main.temp, data.wind.speed, data.main.humidity);
             console.log(`WeatherObj = ${JSON.stringify(weatherObj)}`); //TEST OUTPUT 
             //push the new weather object onto the weatherArr

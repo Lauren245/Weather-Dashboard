@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
   };
   try{
     const weatherData = await WeatherService.getWeatherForCity(cityName);
-    console.log(`getWeatherForCity returned ${JSON.stringify(weatherData)}`);
+    // console.log(`getWeatherForCity returned ${JSON.stringify(weatherData)}`);
     console.log(`typeof weatherData = ${typeof weatherData}`);
     res.json(weatherData);
   }
