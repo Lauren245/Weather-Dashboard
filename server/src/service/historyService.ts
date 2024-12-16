@@ -29,4 +29,4 @@ class HistoryService extends City{
   // async removeCity(id: string) {}
 }
 
-export default new HistoryService();
+//export default new HistoryService();
