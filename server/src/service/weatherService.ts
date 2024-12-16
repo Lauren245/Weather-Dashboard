@@ -177,21 +177,25 @@ class WeatherService{
     try{
         console.log("--------------------------------------------");
         console.log("running parseCurrentWeather method stub");
-        // console.log(`response: ${JSON.stringify(response)}`);
-        //city, date, icon, iconDescription, tempF, windSpeed, humidity
         //list is the property returned by the API call that holds all the objects.
-        const data = response.list[0]; //This will need to be a weather object
-        // console.log(`Current weather: ${JSON.stringify(response.list[0])}`)
+        const data = response.list[0]; 
+        //TEST console logs
         console.log(`data.dt_txt = ${JSON.stringify(data.dt_txt)}` );
         console.log(`typeof data.dt_txt = ${typeof(data.dt_txt)}`);
+
+        //convert the string for datetime to a date so it will be easier to convert its formatting.
         let forcastDate: Date = new Date(data.dt_txt);
+         //format the date, then convert it back to a string.
         let formattedDate: string = `${forcastDate.getMonth()}/${forcastDate.getDate()}/${forcastDate.getFullYear()}`;
-        //data.weather.description is inside an array that only contains one item, hence the weather[0]
+
+        //data.weather.description and icon are inside an array that only contains one item, hence the weather[0]
         const currentWeather = new Weather(this.cityName, formattedDate, data.weather[0].icon, data.weather[0].description, 
                                             data.main.temp, data.wind.speed, data.main.humidity);
+
         console.log(`currentWeather = ${JSON.stringify(currentWeather)}`); //TEST OUTPUT    
         console.log("--------------------------------------------");    
         return currentWeather;
+
     }catch(error){
       console.log("Error: ", error);
       console.log("--------------------------------------------");
@@ -207,25 +211,32 @@ class WeatherService{
       console.log("--------------------------------------------");
       try{
         let weatherArr: Weather[] = [currentWeather];
-        //the first item in the weatherData (at weatherData[0]) has the same content as currentWeather
-        //we want 5 days, and we have already added the first day.
-        //6
-        for(let i = 1; i < 10; i++){
+        
+        for(let i = 0; i < weatherData.length; i++){
+          //TEST OUTPUT
           console.log(`Entering for loop. i = ${i}`);
-          // console.log(`WeatherData[i] = ${JSON.stringify(weatherData[i])}`);
             let data = weatherData[i];
+
+            //TEST OUTPUT
             console.log(`data.dt_txt = ${JSON.stringify(data.dt_txt)}` );
+            //TEST OUTPUT
             console.log(`typeof data.dt_txt = ${typeof(data.dt_txt)}`);
+
+            //convert the string for datetime to a date so it will be easier to convert its formatting.
             let forcastDate: Date = new Date(data.dt_txt);
-             let formattedDate: string = `(${forcastDate.getMonth()}/${forcastDate.getDate()}/${forcastDate.getFullYear()})`;
-            //data.weather.description is inside an array that only contains one item, hence the weather[0]
+            //format the date, then convert it back to a string.
+             let formattedDate: string = `${forcastDate.getMonth()}/${forcastDate.getDate()}/${forcastDate.getFullYear()}`;
+
+            //data.weather.description and icon are inside an array that only contains one item, hence the weather[0]
             let weatherObj = new Weather(this.cityName, formattedDate, data.weather[0].icon, data.weather[0].description, 
                                             data.main.temp, data.wind.speed, data.main.humidity);
-            console.log(`WeatherObj = ${JSON.stringify(weatherObj)}`); //TEST OUTPUT 
+            //TEST OUTPUT
+            console.log(`WeatherObj = ${JSON.stringify(weatherObj)}`);  
             //push the new weather object onto the weatherArr
             weatherArr.push(weatherObj);
         }
           return weatherArr;
+
       }catch(error){
         console.log("Error: ", error);
         throw new Error("Error: Encountered error while building forecast array.");
@@ -241,16 +252,32 @@ class WeatherService{
         
         //set the cityName property to the name of the provided city
         this.cityName = city; 
+
         const coordinates =  await this.fetchAndDestructureLocationData();
         const weatherData = await this.fetchWeatherData(coordinates);
+        //TEST OUTPUT
         console.log("WeatherData:", JSON.stringify(weatherData));
+
         //returns the current weather which is parsed out from response
         const currentWeather = await this.parseCurrentWeather(weatherData);
-        const weatherArr = Array.isArray(weatherData.list) ? weatherData.list : [weatherData];
-        // const weatherArr = Object.values(weatherData);
+
+        const dataArr = Array.isArray(weatherData.list) ? weatherData.list : [weatherData];
+        //create a new empty array to hold the selected data from dataArr.
+        const weatherArr: any[] = [];
+
+        for(let i = 0; i < dataArr.length; i++){
+            //check if the dt_txt value for the data represents a new day. 
+              //The first timestamp in a new day will include "00:00:00"
+            if(dataArr[i].dt_txt.includes("00:00:00")){
+                weatherArr.push(dataArr[i]);
+            }
+        }
+
         const cityWeather = this.buildForecastArray(currentWeather, weatherArr);
         console.log("--------------------------------------------");
+
         return cityWeather;
+
     }catch(error){
       console.log("Error: ", error);
       console.log("--------------------------------------------");
