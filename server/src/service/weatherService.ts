@@ -255,8 +255,8 @@ class WeatherService{
 
         const coordinates =  await this.fetchAndDestructureLocationData();
         const weatherData = await this.fetchWeatherData(coordinates);
-        //TEST OUTPUT
-        console.log("WeatherData:", JSON.stringify(weatherData));
+        //stringify the weather Data
+        JSON.stringify(weatherData);
 
         //returns the current weather which is parsed out from response
         const currentWeather = await this.parseCurrentWeather(weatherData);

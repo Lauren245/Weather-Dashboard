@@ -83,9 +83,14 @@ class HistoryService{
       const fileData = await this.getCities();
       //check if fileData retured an array 
       if(Array.isArray(fileData)){
-        //add newly created city objet to array
-        fileData.push(newCity);
-        await this.write(fileData);
+        const cityExists = fileData.some(existingCity => existingCity.name === newCity.name);
+        if(!cityExists){
+          //add newly created city objet to array
+          fileData.push(newCity);
+          await this.write(fileData);
+        }else{
+          console.log(`${newCity.name} has already been saved to search history.`);
+        }
       }
       else{
         throw new Error(`Attempt to add ${city} to search history failed.`);
