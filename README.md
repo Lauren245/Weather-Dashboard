@@ -6,4 +6,12 @@
 3. https://kentcdodds.com/blog/using-fetch-with-type-script
 4. https://openweathermap.org/current#name
 5. https://medium.com/@wujido20/runtime-types-in-typescript-5f74fc9dc6c4
+6. https://nodejs.org/en/learn/manipulating-files/reading-files-with-nodejs
+7. [Help with fs promises](https://chatgpt.com/c/6760b601-5f68-8012-ba28-12719553e45e)
+8. https://www.geeksforgeeks.org/how-to-convert-json-string-to-array-of-json-objects-using-javascript/
+9. [Help with narrowing error type](https://chatgpt.com/share/6760c2da-fca8-8012-ad26-6513fa5c34ec)
+
+
+1. https://www.npmjs.com/package/randomstring
+
 
