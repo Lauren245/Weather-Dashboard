@@ -53,15 +53,16 @@ class WeatherService{
     try{
       console.log("--------------------------------------------");
       console.log("running fetchLocationData method stub");
-      console.log(`Query param passed in = ${query}`);
+      // console.log(`Query param passed in = ${query}`);
       const response = await fetch(`${this.baseURL}weather?${query}`);
       console.log(response.status);
       console.log("response.ok = "+ response.ok);
       //convert the returned data into JSON
       const data = await response.json();
       //console.log(`returned response = ${await response.text()}`);
-      console.log("fetchLocationData: ", data);
+      //console.log("fetchLocationData: ", data);
       if(!response.ok){
+        console.log("Triggered !response.ok")
         throw new Error("Could not find weather data for the provided location."); //change how this is done?
       }
       const coordinates: Coordinates = {lat: data.coord.lat, lon: data.coord.lon};
@@ -71,9 +72,9 @@ class WeatherService{
       
 
     }catch(error){
-      console.error("Error getting weather data for the provided location.");
+      console.error("Error getting weather data for the provided location.", error);
       console.log("end of fetchLocationData method stub--------------------------------------------");  
-      return error;  
+       return null;
     }
 
     //returns a raw response from the geocode API
@@ -81,18 +82,23 @@ class WeatherService{
   }
   // TODO: Create destructureLocationData method
   private destructureLocationData(locationData: Coordinates): Coordinates {
+    //TODO: figure out a better way to use this method since it is redundant
+    //should return a proper coordinates object.
+    console.log("--------------------------------------------");
+    console.log("running destructureLocationData method stub");
+    console.log("--------------------------------------------");
+    console.log(`locationData = ${JSON.stringify(locationData)}`);
     try{
-      //TODO: figure out a better way to use this method since it is redundant
-        //should return a proper coordinates object.
-        console.log("--------------------------------------------");
-        console.log("running destructureLocationData method stub");
+      if(!locationData){
+          throw new Error("The provided location data is not valid.");
+      }else{
         console.log(`location Data Coordinates: ${locationData.lat}, ${locationData.lon}`);
-        console.log("--------------------------------------------");
         return locationData;
+      }
+
     }catch(error){
-      console.log("Error: ", error);
-      //must use throw here because this method has a return type of coordinates
-      throw new Error("Error: Encountered error while destructuring location data.");
+      console.error(error);
+      throw error; //There might be a better way to do this. It doesn't actually stop execution
     }
   }
   // TODO: Create buildGeocodeQuery method
@@ -134,20 +140,18 @@ class WeatherService{
       //fetch the weather data via the destructured coordinates
       // await this.fetchWeatherData(coordinates);
       console.log("--------------------------------------------");
+      console.log("RETURNING COORDINATES");
       return coordinates;
 
     }catch(error){
-        console.log("Error: ", error);
+        //This logs the error thrown at the end of the destructureLocationData method;
+        console.log(error);
+        console.log("THROWING ERROR");
         console.log("--------------------------------------------");
-        throw new Error("Error: Encountered error while fetching and destructuring location data.");
+        return null;     
     }
-
-
-
-   
-
-    //this method calls fetchLocationData and destructureLocationData
   }
+
   // TODO: Create fetchWeatherData method
   private async fetchWeatherData(coordinates: Coordinates) {
     try{
@@ -254,34 +258,39 @@ class WeatherService{
         this.cityName = city; 
 
         const coordinates =  await this.fetchAndDestructureLocationData();
-        const weatherData = await this.fetchWeatherData(coordinates);
-        //stringify the weather Data
-        JSON.stringify(weatherData);
-
-        //returns the current weather which is parsed out from response
-        const currentWeather = await this.parseCurrentWeather(weatherData);
-
-        const dataArr = Array.isArray(weatherData.list) ? weatherData.list : [weatherData];
-        //create a new empty array to hold the selected data from dataArr.
-        const weatherArr: any[] = [];
-
-        for(let i = 0; i < dataArr.length; i++){
-            //check if the dt_txt value for the data represents a new day. 
-              //The first timestamp in a new day will include "00:00:00"
-            if(dataArr[i].dt_txt.includes("00:00:00")){
-                weatherArr.push(dataArr[i]);
-            }
+        //check if previous method returned null
+        if(coordinates === null){
+          throw new Error(`The value of coordinates is invalid. Coordinates returned: ${coordinates}`);
         }
-
-        const cityWeather = this.buildForecastArray(currentWeather, weatherArr);
-        console.log("--------------------------------------------");
-
-        return cityWeather;
-
+        else{
+          const weatherData = await this.fetchWeatherData(coordinates);
+          //stringify the weather Data
+          JSON.stringify(weatherData);
+  
+          //returns the current weather which is parsed out from response
+          const currentWeather = await this.parseCurrentWeather(weatherData);
+  
+          const dataArr = Array.isArray(weatherData.list) ? weatherData.list : [weatherData];
+          //create a new empty array to hold the selected data from dataArr.
+          const weatherArr: any[] = [];
+  
+          for(let i = 0; i < dataArr.length; i++){
+              //check if the dt_txt value for the data represents a new day. 
+                //The first timestamp in a new day will include "00:00:00"
+              if(dataArr[i].dt_txt.includes("00:00:00")){
+                  weatherArr.push(dataArr[i]);
+              }
+          }
+  
+          const cityWeather = this.buildForecastArray(currentWeather, weatherArr);
+          console.log("--------------------------------------------");
+  
+          return cityWeather;
+        }
     }catch(error){
-      console.log("Error: ", error);
+      console.error(error);
       console.log("--------------------------------------------");
-      return error;
+      return null;
     }
 
   }

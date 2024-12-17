@@ -11,26 +11,31 @@ router.post('/', async (req, res) => {
   console.log("inside default router in weatherRoutes.ts");
   try{
     // TODO: GET weather data from city name
-    const {cityName} = req.body;
-    //check if the city name is valid
-    if(!cityName){
-      console.log("inside !cityName statement");
-      res.status(404).json("No match found for this city name.");
-      return;
-    };
+    const {cityName} = req.body;   
     const weatherData = await WeatherService.getWeatherForCity(cityName);
-    // console.log(`getWeatherForCity returned ${JSON.stringify(weatherData)}`);
+    console.log(`getWeatherForCity returned ${JSON.stringify(weatherData)}`);
     console.log(`typeof weatherData = ${typeof weatherData}`);
-    res.json(weatherData);
+    if(!weatherData){
+      console.log("ROUTER.POST if statement triggered.")
+      throw new Error(`No weather data exists for ${cityName}.`);
+
+    }
+    else{
+      res.json(weatherData);
+    }
 
     // TODO: save city to search history
     HistoryService.addCity(cityName);
   }
   catch(error){
-    console.log("Error: " + error);
-    res.status(404).json( `Unable to retrieve weather data for ${req.body}.`);
+    if(error instanceof Error){
+      console.error("Error caught in catch block: ", error.stack);
+    }
+    else{
+      console.error("an unknown error has occured while processing POST request.")
+    }
+    return;    
   }
-  
 });
 
 // TODO: GET search history
