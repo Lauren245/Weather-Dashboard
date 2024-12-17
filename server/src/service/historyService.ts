@@ -1,32 +1,99 @@
+import randomString from 'randomstring';
+import {promises as fsPromises} from 'fs';
+
 // TODO: Define a City class with name and id properties
 class City {
-  id: string;
-  name: string;
+  //I want Id to be private since it is going to be used to be used as a unique identifier
+  private id: string;
+  public name: string;
 
-  constructor(id: string, name: string){
-    this.id = id;
+  constructor(name: string){
+    this.id = this.generateRandomString();
     this.name = name;
+  }
+  private generateRandomString(): string{
+    const randomIdString = randomString.generate({
+      length: 12,
+      charset: 'alphanumeric'
+    });
+    console.log(`randomIdString = ${randomIdString}`);
+    return randomIdString;
+  }
+
+  public getId(): string{
+    return this.id;
   }
 }
 
 // TODO: Complete the HistoryService class
-class HistoryService extends City{
-  // private city: City;
+class HistoryService{
+  city: City;
   
-  // constructor(city: City){
-  //   this.city = city;
-  // }
+  constructor(){
+    this.city = new City("");   
+  }
   
   // TODO: Define a read method that reads from the searchHistory.json file
-  // private async read() {}
+  private async read() {
+    try{
+      const fileData = await fsPromises.readFile('db.json', 'utf-8');
+      console.log("read file data successfully");
+      return fileData;
+
+    }catch(error){
+      console.error("unable to read file data.");
+      return " ";
+    }
+  };
   // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
-  // private async write(cities: City[]) {}
+  private async write(cities: City[]) {
+    try{
+      await fsPromises.writeFile('db.json', cities);
+      console.log("City added to history.");
+
+    }catch(error){
+      console.error("failed to save city to history.");
+    }
+  }
   // TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
-  // async getCities() {}
+  async getCities() {
+    try{
+      const data = await this.read();
+      //convert JSON string into an array of usable objects.
+      const cities: City[] = JSON.parse(data);
+      return cities;
+    }catch(error){
+      console.error("failed to get cities");
+      return "";
+    }
+
+  }
+
   // TODO Define an addCity method that adds a city to the searchHistory.json file
-  // async addCity(city: string) {}
+  async addCity(city: string) {
+    try{
+      //create a new city object
+      const newCity = new City(city);
+      //read the existing data
+      const fileData = await this.getCities();
+      //check if fileData retured an array 
+      if(Array.isArray(fileData)){
+        //add newly created city objet to array
+        fileData.push(newCity);
+        await this.write(fileData);
+      }
+      else{
+        throw new Error(`Attempt to add ${city} to search history failed.`);
+      }     
+    }catch(error){
+      if(error instanceof Error){
+        console.error('add city encountered an error. Message: ', error.message);
+      }
+      console.error('An unknown error has occured.');
+    }
+  }
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
   // async removeCity(id: string) {}
 }
 
-//export default new HistoryService();
+export default new HistoryService();
