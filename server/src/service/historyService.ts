@@ -1,5 +1,9 @@
 import randomString from 'randomstring';
 import {promises as fsPromises} from 'fs';
+import path from 'path';
+import {fileURLToPath} from 'url';
+const __fileName = fileURLToPath(import.meta.url);
+const __dirName = path.dirname(__fileName);
 
 // TODO: Define a City class with name and id properties
 class City {
@@ -36,19 +40,20 @@ class HistoryService{
   // TODO: Define a read method that reads from the searchHistory.json file
   private async read() {
     try{
-      const fileData = await fsPromises.readFile('db.json', 'utf-8');
+      const fileData = await fsPromises.readFile(path.resolve(__dirName, "../../db/db.json"), "utf-8");
       console.log("read file data successfully");
       return fileData;
 
     }catch(error){
+      console.log(error);
       console.error("unable to read file data.");
-      return " ";
+      return "";
     }
   };
   // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
   private async write(cities: City[]) {
     try{
-      await fsPromises.writeFile('db.json', cities);
+      await fsPromises.writeFile(path.resolve(__dirName, "../../db/db.json"), JSON.stringify(cities));
       console.log("City added to history.");
 
     }catch(error){
@@ -60,7 +65,7 @@ class HistoryService{
     try{
       const data = await this.read();
       //convert JSON string into an array of usable objects.
-      const cities: City[] = JSON.parse(data);
+      const cities: City[] = JSON.parse(data.toString());
       return cities;
     }catch(error){
       console.error("failed to get cities");
@@ -89,7 +94,9 @@ class HistoryService{
       if(error instanceof Error){
         console.error('add city encountered an error. Message: ', error.message);
       }
-      console.error('An unknown error has occured.');
+      else{
+        console.error('An unknown error has occured.');
+      }
     }
   }
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
