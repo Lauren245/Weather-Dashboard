@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     // TODO: GET weather data from city name
     const {cityName} = req.body;   
     const weatherData = await WeatherService.getWeatherForCity(cityName);
-    console.log(`getWeatherForCity returned ${JSON.stringify(weatherData)}`);
+    //console.log(`getWeatherForCity returned ${JSON.stringify(weatherData)}`);
     console.log(`typeof weatherData = ${typeof weatherData}`);
     if(!weatherData){
       console.log("ROUTER.POST if statement triggered.")
@@ -29,10 +29,10 @@ router.post('/', async (req, res) => {
   }
   catch(error){
     if(error instanceof Error){
-      console.error("Error caught in catch block: ", error.stack);
+      console.error(`\n Error caught in catch block: ${error.stack}`);
     }
     else{
-      console.error("an unknown error has occured while processing POST request.")
+      console.error(`\n Error caught in catch block: ${error}`);
     }
     return;    
   }
