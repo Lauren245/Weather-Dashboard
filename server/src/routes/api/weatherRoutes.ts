@@ -47,6 +47,15 @@ router.get('/history', async (_req, res) => {
 });
 
 // * BONUS TODO: DELETE city from search history
-//router.delete('/history/:id', async (req, res) => {});
+router.delete('/history/:id', async (req, res) => {
+  try{
+    const {id} = req.body;
+    await HistoryService.removeCity(id);
+    return res.json("deleted city");
+  }catch(error){
+    console.error(`\n Error caught in catch block: ${error}`);
+    return res.status(500).json("An unexpected error occured");
+  }
+});
 
 export default router;
