@@ -11,8 +11,8 @@ class City {
   private id: string;
   public name: string;
 
-  constructor(name: string){
-    this.id = this.generateRandomString();
+  constructor(name: string, id?: string){
+    this.id = id || this.generateRandomString();
     this.name = name;
   }
   private generateRandomString(): string{
@@ -69,8 +69,15 @@ class HistoryService{
         console.log("!data if statement triggered");
         throw new Error("Unable to read data from the database.");
       }
+
+      const citiesData = JSON.parse(data.toString());
+      if(!Array.isArray(citiesData)){
+        throw new Error("parsed data is not an array");
+      }
+
       //convert JSON string into an array of usable objects.
-      const cities: City[] = JSON.parse(data.toString());
+      //const cities: City[] = JSON.parse(data.toString());
+      const cities = citiesData.map((item: any) => new City(item.name, item.id));
       return cities;
 
     }catch(error){
@@ -80,7 +87,7 @@ class HistoryService{
       else{
         console.error(`\n Error caught in catch block: ${error}`);
       }
-      return null;
+      return [];
     }
 
   }
@@ -126,18 +133,23 @@ class HistoryService{
     try{
       console.log(`id passed in ${id}.`);
       const citiesArr = await this.getCities();
-      //console.log(`citiesArr = ${JSON.stringify(citiesArr)}`);
-      //const data = await this.read();
-      if(!citiesArr){
-        console.log("removeCity: !data if statement triggered");
+      //if citiesArr.length does equal 0, that means the catch block for getCities was triggered.
+      if(citiesArr.length === 0){
+        console.log("removeCity: if statement triggered");
         throw new Error("failed to retrieve data from database, because the database contents could not be read.");
       }
-      //TODO fix this. (getId is not a method of cities.)
-      console.log(`Array.isArray(citiesArr) = ${Array.isArray(citiesArr)}`);
-      if(Array.isArray(citiesArr)){
-        const cities = citiesArr.map((item: any) => new City(item.name));
-        let index = cities.findIndex((item: City)=> item.getId() === id);
-        console.log(`Index = ${index}: ${cities[index]}`);
+      const index = citiesArr.findIndex((item: City) => item.getId() === id);
+      console.log(`Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
+
+      if(index !== -1){
+        console.log(`Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
+        //remove city
+        citiesArr.splice(index, 1);
+        //rewrite the array of cities
+        await this.write(citiesArr);
+      }
+      else{
+        throw new Error(`Could not find a city at index ${index}`);
       }
     }catch(error){
       if(error instanceof Error){

@@ -11,7 +11,7 @@
 8. https://www.geeksforgeeks.org/how-to-convert-json-string-to-array-of-json-objects-using-javascript/
 9. [Help with narrowing error type](https://chatgpt.com/share/6760c2da-fca8-8012-ad26-6513fa5c34ec)
 10. https://www.geeksforgeeks.org/how-to-get-a-value-from-a-json-array-in-javascript/
-
+11. [Help with fixing deleteCities method](https://chatgpt.com/share/67634f70-3688-8012-a961-4c2a062c4d71)
 1. https://www.npmjs.com/package/randomstring
 
 
