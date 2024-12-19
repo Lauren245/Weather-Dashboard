@@ -14,7 +14,7 @@ class Weather{
   date: string; //this doesn't make much sense to me, but this is the only way I am seeing dates formatted when making a test API call
   icon: string;
   iconDescription: string;
-  tempF: number; //this needs to become a float
+  tempF: number; 
   windSpeed: number;
   humidity: number;
 
@@ -30,24 +30,16 @@ class Weather{
 
 };
 
-//TODO: determine how to reformat dates, and fix temperature values.
-
 // TODO: Complete the WeatherService class
 class WeatherService{
   // TODO: Define the baseURL, API key, and city name properties
   baseURL: string;
   APIKey: string;
   cityName: string;
-  //coordinates? : Coordinates; //I made this optional so I could avoid defining coordinates in the constructor. I don't think this is how it is supposed to work
-  
   constructor(){
-    // this.baseURL = process.env.API_BASE_URL + "/data/2.5/weather?";
     this.baseURL = process.env.API_BASE_URL + "/data/2.5/";
     this.APIKey = process.env.API_KEY || "";
     this.cityName = "";
-    if(!this.APIKey){
-      throw new Error("Error: API_KEY is undefined in the .env file.");
-    };
   };
   // TODO: Create fetchLocationData method
   private async fetchLocationData(query: string) {
