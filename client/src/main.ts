@@ -34,21 +34,34 @@ API Calls
 
 */
 
+//Added a try/catch block here because this code was rendering cards with undefined values when invalid data was entered.
 const fetchWeather = async (cityName: string) => {
-  const response = await fetch('/api/weather/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ cityName }),
-  });
+  try {
+    const response = await fetch('/api/weather/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cityName }),
+    });
 
-  const weatherData = await response.json();
+    if (!response.ok) {
+      throw new Error(`Failed to fetch weather data for ${cityName}`);
+    }
 
-  console.log('weatherData: ', weatherData);
+    const weatherData = await response.json();
 
-  renderCurrentWeather(weatherData[0]);
-  renderForecast(weatherData.slice(1));
+    if (!weatherData || weatherData.length === 0) {
+      throw new Error(`No weather data found for ${cityName}`);
+    }
+
+    console.log('weatherData: ', weatherData);
+
+    renderCurrentWeather(weatherData[0]);
+    renderForecast(weatherData.slice(1));
+  } catch (error) {
+    console.error(`Error fetching weather data: ${error}`);
+  }
 };
 
 const fetchSearchHistory = async () => {

@@ -17,10 +17,9 @@ router.post('/', async (req, res) => {
     }
     else{
       res.json(weatherData);
+      // TODO: save city to search history
+      HistoryService.addCity(cityName);
     }
-
-    // TODO: save city to search history
-    HistoryService.addCity(cityName);
   }
   catch(error){
     if(error instanceof Error){
@@ -30,7 +29,6 @@ router.post('/', async (req, res) => {
       console.error(`\n Error caught in / router.post method catch block: ${error}`);
     }
     res.status(500).json("An unexpected error occured");
-    return; 
   }
 });
 

@@ -54,7 +54,7 @@ class WeatherService{
     try{
       //console.log("running fetchLocationData method");
       const response = await fetch(`${this.baseURL}weather?${query}`);
-      
+
       console.log(` \n API call returned with status: ${response.status}: ${response.statusText}`);
 
       //TODO: update this so the response is checking for more specific error codes.
@@ -198,7 +198,8 @@ class WeatherService{
     }catch(error){
       console.error(`\n Error caught in parseCurrentWeatherMethod catch block: ${error}`);
       //Throw error again to avoid returning a value here.
-      throw error;
+      //throw error;
+      return null;
     }
 
   }
@@ -270,10 +271,18 @@ class WeatherService{
                   weatherArr.push(dataArr[i]);
               }
           }
-          
-          const cityWeather = this.buildForecastArray(currentWeather, weatherArr);
+          if(!currentWeather){
+            console.log("triggered !currentWeather if statement")
+            console.log(`The value of currentWeather is invalid. currentWeather returned "${currentWeather}".`);
+          }
+          else{
+            const cityWeather = this.buildForecastArray(currentWeather, weatherArr);
 
-          return cityWeather;
+            return cityWeather;
+          }
+          //an error is thrown here because the code cannot reach this point and have a valid value
+            //AND this prevents the issues of not having all code paths return a value.
+          throw new Error()
         }
     }catch(error){
       if(error instanceof Error){
