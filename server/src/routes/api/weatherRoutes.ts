@@ -24,12 +24,13 @@ router.post('/', async (req, res) => {
   }
   catch(error){
     if(error instanceof Error){
-      console.error(`\n Error caught in catch block: ${error.stack}`);
+      console.error(`\n Error caught in router.post method catch block: ${error.stack}`);
     }
     else{
-      console.error(`\n Error caught in catch block: ${error}`);
+      console.error(`\n Error caught in / router.post method catch block: ${error}`);
     }
-    return;    
+    res.status(500).json("An unexpected error occured");
+    return; 
   }
 });
 
@@ -38,10 +39,12 @@ router.get('/history', async (_req, res) => {
   try{
     const cities = await HistoryService.getCities();
     console.log("CITIES IN HISTORY: ",cities);
+
     //send JSON response
     return res.json(cities);
+
   }catch(error){
-    console.error("Failed to get city search history.");
+    console.error(`\n Error caught in /history router.get method catch block: ${error} `);
     return res.status(500).json("An unexpected error occured");
   }
 });
@@ -54,7 +57,7 @@ router.delete('/history/:id', async (req, res) => {
     await HistoryService.removeCity(id);
     return res.json("deleted city");
   }catch(error){
-    console.error(`\n Error caught in catch block: ${error}`);
+    console.error(`\n Error caught in /history/:id router.delete method catch block: ${error}`);
     return res.status(500).json("An unexpected error occured");
   }
 });

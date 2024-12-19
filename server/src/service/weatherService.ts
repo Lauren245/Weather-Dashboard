@@ -54,6 +54,7 @@ class WeatherService{
     try{
       //console.log("running fetchLocationData method");
       const response = await fetch(`${this.baseURL}weather?${query}`);
+      
       console.log(` \n API call returned with status: ${response.status}: ${response.statusText}`);
 
       //TODO: update this so the response is checking for more specific error codes.
@@ -64,16 +65,16 @@ class WeatherService{
         //convert the returned data into JSON
         const data = await response.json();
         const coordinates: Coordinates = {lat: data.coord.lat, lon: data.coord.lon};
-        //console.log(`Coordinates: ${JSON.stringify(coordinates)}`); //TEST OUTPUT
+
         return coordinates;
       }
 
     }catch(error){
       if(error instanceof Error){
-        console.error(`\n Error caught in catch block: ${error.stack}`);
+        console.error(`\n Error caught in fetchLocationData method catch block: ${error}`);
       }
       else{
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in fetchLocationData method catch block: ${error}`);
       } 
       
       return null;
@@ -98,12 +99,12 @@ class WeatherService{
 
     }catch(error){
       if(error instanceof Error){
-        console.error(`\n Error caught in catch block: ${error.stack}`);
+        console.error(`\n Error caught in destrureLocationData method catch block: ${error.stack}`);
       }
       else{
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in destrureLocationData method catch block: ${error}`);
       } 
-      //Rethrow the error since a non Coordinates object(or type) cannot be returned.
+      //Throw error again since a non Coordinates object(or type) cannot be returned.
       throw error; 
     }
   }
@@ -128,15 +129,19 @@ class WeatherService{
       console.log("running fetchAndDestructureLocationData method");
       
       const locationData = await this.fetchLocationData(this.buildGeocodeQuery());
-      //console.log(`locationData = ${JSON.stringify(locationData)}`);
+      if(!locationData){
+        throw new Error(`Invalid locationData. locationData returned "${locationData}"`);
+      }
+    
       const coordinates = this.destructureLocationData(locationData as Coordinates);
-      //console.log(`coordinates = ${JSON.stringify(coordinates)}`);
+      if(!coordinates){
+        throw new Error(`Invalid coordinates. coordinates returned "${coordinates}"`);
+      }
+    
       return coordinates;
 
     }catch(error){
-        //This logs the error thrown at the end of the destructureLocationData method;
-        console.error(`\n Error caught in catch block: ${error}`);
-        //console.log("THROWING ERROR");
+        console.error(`\n Error caught in fetchAndDestructureLocationData method catch block: ${error}`);
         return null;     
     }
   }
@@ -145,8 +150,9 @@ class WeatherService{
   private async fetchWeatherData(coordinates: Coordinates) {
     try{
       console.log("running fetchWeatherData method");
-      //console.log(`Coordinates: ${coordinates.lat}, ${coordinates.lon}`);
+
       const coordQuery = this.buildWeatherQuery(coordinates);
+
       const response = await fetch(`${this.baseURL}forecast?${coordQuery}`);
 
       console.log(` \n API call returned with status: ${response.status}: ${response.statusText}`);
@@ -156,15 +162,16 @@ class WeatherService{
       }
 
       const weatherData = await response.json();
+
       return weatherData;
       
 
     }catch(error){
       if(error instanceof Error){
-        console.error(`\n Error caught in catch block: ${error.stack}`);
+        console.error(`\n Error caught in fetchWeatherData method catch block: ${error.stack}`);
       }
       else{
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in fetchWeatherData method catch block: ${error}`);
       } 
       return null;
     }
@@ -173,7 +180,7 @@ class WeatherService{
   // TODO: Build parseCurrentWeather method
   private parseCurrentWeather(response: any) {
     try{
-        console.log("running parseCurrentWeather method");
+        console.log("running parseCurrentWeather method catch block");
         //list is the property returned by the API call that holds all the objects.
         const data = response.list[0]; 
         //convert the string for datetime to a date so it will be easier to convert its formatting.
@@ -189,7 +196,8 @@ class WeatherService{
         return currentWeather;
 
     }catch(error){
-      console.error(`\n Error caught in catch block: ${error}`);
+      console.error(`\n Error caught in parseCurrentWeatherMethod catch block: ${error}`);
+      //Throw error again to avoid returning a value here.
       throw error;
     }
 
@@ -197,7 +205,7 @@ class WeatherService{
 
   // TODO: Complete buildForecastArray method
     private buildForecastArray(currentWeather: Weather, weatherData: any[]) {
-      console.log("running buildForecastArray method");
+      console.log("running buildForecastArray method catch block");
       try{
         let weatherArr: Weather[] = [currentWeather];
         
@@ -221,7 +229,8 @@ class WeatherService{
           return weatherArr;
 
       }catch(error){
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in buildForecastArray method catch block: ${error}`);
+        //Throw error again to avoid returning a value here.
         throw error
       }
     }
@@ -238,10 +247,11 @@ class WeatherService{
 
         //check if previous method returned null
         if(!coordinates){
-          throw new Error(`The value of coordinates is invalid. Coordinates returned: ${coordinates}`);
+          throw new Error(`The value of coordinates is invalid. Coordinates returned: "${coordinates}"`);
         }
         else{
           const weatherData = await this.fetchWeatherData(coordinates);
+
           //stringify the weather Data
           JSON.stringify(weatherData);
   
@@ -267,10 +277,10 @@ class WeatherService{
         }
     }catch(error){
       if(error instanceof Error){
-        console.error(`\n Error caught in catch block: ${error.stack}`);
+        console.error(`\n Error caught in getWeatherForCity method catch block: ${error.stack}`);
       }
       else{
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in getWeatherForCity method catch block: ${error}`);
       } 
       return null;
     }

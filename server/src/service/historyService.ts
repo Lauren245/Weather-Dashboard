@@ -20,12 +20,10 @@ class City {
       length: 12,
       charset: 'alphanumeric'
     });
-    console.log(`randomIdString = ${randomIdString}`);
     return randomIdString;
   }
 
   public getId(): string{
-    console.log("inside getId() method")
     return this.id;
   }
 }
@@ -46,7 +44,7 @@ class HistoryService{
       return fileData;
 
     }catch(error){
-      console.error(`\n Error caught in catch block: ${error}`);
+      console.error(`\n Error caught in read method catch block: ${error}`);
       return null;
     }
   };
@@ -57,7 +55,7 @@ class HistoryService{
       console.log("City added to history.");
 
     }catch(error){
-      console.error(`\n Error caught in catch block: ${error}`);
+      console.error(`\n Error caught in write method catch block: ${error}`);
     }
   }
   // TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
@@ -82,10 +80,10 @@ class HistoryService{
 
     }catch(error){
       if(error instanceof Error){
-        console.error(`\n Error caught in catch block: ${error.stack}`);
+        console.error(`\n Error caught in getCities method catch block: ${error.stack}`);
       }
       else{
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in getCities method catch block : ${error}`);
       }
       return [];
     }
@@ -121,10 +119,10 @@ class HistoryService{
     }catch(error){
       if(error instanceof Error){
         //console.error('add city encountered an error. Message: ', error.message);
-        console.error(`\n Error caught in catch block: ${error.stack}`);
+        console.error(`\n Error caught in addCity method catch block: ${error.stack}`);
       }
       else{
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in addCity method catch block: ${error}`);
       }
     }
   }
@@ -153,10 +151,10 @@ class HistoryService{
       }
     }catch(error){
       if(error instanceof Error){
-        console.error(`\n Error caught in catch block: ${error.stack}`);
+        console.error(`\n Error caught in removeCity method catch block: ${error.stack}`);
       }
       else{
-        console.error(`\n Error caught in catch block: ${error}`);
+        console.error(`\n Error caught in removeCity method catch block: ${error}`);
       }
     }
       
