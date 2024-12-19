@@ -11,8 +11,8 @@ class City {
   private id: string;
   public name: string;
 
-  constructor(name: string){
-    this.id = this.generateRandomString();
+  constructor(name: string, id?: string){
+    this.id = id || this.generateRandomString();
     this.name = name;
   }
   private generateRandomString(): string{
@@ -20,7 +20,6 @@ class City {
       length: 12,
       charset: 'alphanumeric'
     });
-    console.log(`randomIdString = ${randomIdString}`);
     return randomIdString;
   }
 
@@ -45,9 +44,8 @@ class HistoryService{
       return fileData;
 
     }catch(error){
-      console.log(error);
-      console.error("unable to read file data.");
-      return "";
+      console.error(`\n Error caught in read method catch block: ${error}`);
+      return null;
     }
   };
   // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
@@ -57,19 +55,37 @@ class HistoryService{
       console.log("City added to history.");
 
     }catch(error){
-      console.error("failed to save city to history.");
+      console.error(`\n Error caught in write method catch block: ${error}`);
     }
   }
   // TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
   async getCities() {
     try{
       const data = await this.read();
+      //check if read() returned a null value
+      if(!data){
+        console.log("!data if statement triggered");
+        throw new Error("Unable to read data from the database.");
+      }
+
+      const citiesData = JSON.parse(data.toString());
+      if(!Array.isArray(citiesData)){
+        throw new Error("parsed data is not an array");
+      }
+
       //convert JSON string into an array of usable objects.
-      const cities: City[] = JSON.parse(data.toString());
+      //const cities: City[] = JSON.parse(data.toString());
+      const cities = citiesData.map((item: any) => new City(item.name, item.id));
       return cities;
+
     }catch(error){
-      console.error("failed to get cities");
-      return "";
+      if(error instanceof Error){
+        console.error(`\n Error caught in getCities method catch block: ${error.stack}`);
+      }
+      else{
+        console.error(`\n Error caught in getCities method catch block : ${error}`);
+      }
+      return [];
     }
 
   }
@@ -81,6 +97,11 @@ class HistoryService{
       const newCity = new City(city);
       //read the existing data
       const fileData = await this.getCities();
+      //check if getCities() returned a null value
+      if(!fileData){
+        console.log("!fileData if statement triggered");
+        throw new Error("Unable to add city to history because the attempt to get cities failed.");
+      }
       //check if fileData retured an array 
       if(Array.isArray(fileData)){
         const cityExists = fileData.some(existingCity => existingCity.name === newCity.name);
@@ -97,15 +118,47 @@ class HistoryService{
       }     
     }catch(error){
       if(error instanceof Error){
-        console.error('add city encountered an error. Message: ', error.message);
+        //console.error('add city encountered an error. Message: ', error.message);
+        console.error(`\n Error caught in addCity method catch block: ${error.stack}`);
       }
       else{
-        console.error('An unknown error has occured.');
+        console.error(`\n Error caught in addCity method catch block: ${error}`);
       }
     }
   }
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
-  // async removeCity(id: string) {}
+  async removeCity(id: string) { 
+    try{
+      console.log(`id passed in ${id}.`);
+      const citiesArr = await this.getCities();
+      //if citiesArr.length does equal 0, that means the catch block for getCities was triggered.
+      if(citiesArr.length === 0){
+        console.log("removeCity: if statement triggered");
+        throw new Error("failed to retrieve data from database, because the database contents could not be read.");
+      }
+      const index = citiesArr.findIndex((item: City) => item.getId() === id);
+      console.log(`Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
+
+      if(index !== -1){
+        console.log(`Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
+        //remove city
+        citiesArr.splice(index, 1);
+        //rewrite the array of cities
+        await this.write(citiesArr);
+      }
+      else{
+        throw new Error(`Could not find a city at index ${index}`);
+      }
+    }catch(error){
+      if(error instanceof Error){
+        console.error(`\n Error caught in removeCity method catch block: ${error.stack}`);
+      }
+      else{
+        console.error(`\n Error caught in removeCity method catch block: ${error}`);
+      }
+    }
+      
+  }
 }
 
 export default new HistoryService();
