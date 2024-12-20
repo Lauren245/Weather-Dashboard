@@ -79,7 +79,7 @@ class WeatherService{
   private destructureLocationData(locationData: Coordinates): Coordinates {
     //TODO: figure out a better way to use this method since it is redundant
     try{
-      console.log("running destructureLocationData method");
+      console.log("\n running destructureLocationData method");
 
       if(!locationData){
           throw new Error(`The provided location data "${JSON.stringify(locationData)}" is not valid.`);
@@ -103,14 +103,14 @@ class WeatherService{
 
   // TODO: Create buildGeocodeQuery method
   private buildGeocodeQuery(): string {
-    console.log("running buildGeocodeQuery method");
+    console.log("\n running buildGeocodeQuery method");
 
     return `q=${this.cityName}&appid=${this.APIKey}&units=imperial`;
   }
 
   // TODO: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
-    console.log("running buildWeatherQuery method");
+    console.log("\n running buildWeatherQuery method");
 
     return `lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.APIKey}&units=imperial`;
   }
@@ -118,7 +118,7 @@ class WeatherService{
   // TODO: Create fetchAndDestructureLocationData method
   private async fetchAndDestructureLocationData() {
     try{
-      console.log("running fetchAndDestructureLocationData method");
+      console.log("\n running fetchAndDestructureLocationData method");
       
       const locationData = await this.fetchLocationData(this.buildGeocodeQuery());
       if(!locationData){
@@ -141,7 +141,7 @@ class WeatherService{
   // TODO: Create fetchWeatherData method
   private async fetchWeatherData(coordinates: Coordinates) {
     try{
-      console.log("running fetchWeatherData method");
+      console.log("\n running fetchWeatherData method");
 
       const coordQuery = this.buildWeatherQuery(coordinates);
 
@@ -172,7 +172,7 @@ class WeatherService{
   // TODO: Build parseCurrentWeather method
   private parseCurrentWeather(response: any) {
     try{
-        console.log("running parseCurrentWeather method catch block");
+        console.log("\n running parseCurrentWeather method");
         //list is the property returned by the API call that holds all the objects.
         const data = response.list[0]; 
         //convert the string for datetime to a date so it will be easier to convert its formatting.
@@ -198,7 +198,7 @@ class WeatherService{
 
   // TODO: Complete buildForecastArray method
     private buildForecastArray(currentWeather: Weather, weatherData: any[]) {
-      console.log("running buildForecastArray method catch block");
+      console.log(" \n running buildForecastArray method");
       try{
         let weatherArr: Weather[] = [currentWeather];
         
@@ -230,7 +230,7 @@ class WeatherService{
   // TODO: Complete getWeatherForCity method
   async getWeatherForCity(city: string) {
     try{
-        console.log("running getWeatherForCity method");
+        console.log("\n running getWeatherForCity method");
         console.log(`City: ${city}`);
         
         //set the cityName property to the name of the provided city

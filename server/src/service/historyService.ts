@@ -40,7 +40,7 @@ class HistoryService{
   private async read() {
     try{
       const fileData = await fsPromises.readFile(path.resolve(__dirName, "../../db/db.json"), "utf-8");
-      console.log("read file data successfully");
+      console.log("\n read file data successfully");
       return fileData;
 
     }catch(error){
@@ -52,7 +52,7 @@ class HistoryService{
   private async write(cities: City[]) {
     try{
       await fsPromises.writeFile(path.resolve(__dirName, "../../db/db.json"), JSON.stringify(cities));
-      console.log("City added to history.");
+      console.log("\n City added to history.");
 
     }catch(error){
       console.error(`\n Error caught in write method catch block: ${error}`);
@@ -64,7 +64,6 @@ class HistoryService{
       const data = await this.read();
       //check if read() returned a null value
       if(!data){
-        console.log("!data if statement triggered");
         throw new Error("Unable to read data from the database.");
       }
 
@@ -99,7 +98,6 @@ class HistoryService{
       const fileData = await this.getCities();
       //check if getCities() returned a null value
       if(!fileData){
-        console.log("!fileData if statement triggered");
         throw new Error("Unable to add city to history because the attempt to get cities failed.");
       }
       //check if fileData retured an array 
@@ -110,7 +108,7 @@ class HistoryService{
           fileData.push(newCity);
           await this.write(fileData);
         }else{
-          console.log(`${newCity.name} has already been saved to search history.`);
+          console.log(`\n ${newCity.name} has already been saved to search history.`);
         }
       }
       else{
@@ -133,20 +131,19 @@ class HistoryService{
       const citiesArr = await this.getCities();
       //if citiesArr.length does equal 0, that means the catch block for getCities was triggered.
       if(citiesArr.length === 0){
-        console.log("removeCity: if statement triggered");
         throw new Error("failed to retrieve data from database, because the database contents could not be read.");
       }
       const index = citiesArr.findIndex((item: City) => item.getId() === id);
-      console.log(`Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
 
       if(index !== -1){
-        console.log(`Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
+        console.log(`\n Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
         //remove city
         citiesArr.splice(index, 1);
         //rewrite the array of cities
         await this.write(citiesArr);
       }
       else{
+        console.log(`\n Index = ${index}: ${JSON.stringify(citiesArr[index])}`);
         throw new Error(`Could not find a city at index ${index}`);
       }
     }catch(error){
