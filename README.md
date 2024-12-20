@@ -5,6 +5,10 @@
 ## Table of Contents 
 [Description](#description)
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[My Contributions](#my-contributions)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Error Handling](#error-handling)
+
 [Installation](#installation)
 
 [Usage](#usage)
@@ -66,39 +70,45 @@ In the WeatherService class, error handling is implemented to manage issues that
 In the HistoryService class, error handling is implemented to manage issues that may arise when reading from or writing to the db.json file. Methods like read, write, getCities, addCity, and removeCity include try/catch blocks to handle potential errors during file operations and data processing.
 
 ## Installation
+**Note: The app does not need to be installed unless you wish to run the app locally on your machine. To just use the app go to https://weather-dashboard-ktb0.onrender.com/** 
+
 To install this application, follow these steps:
 1. Clone [repository](https://github.com/Lauren245/Weather-Dashboard)
 2. Open code in a code editor such as VS Code.
+3. visit the [OpenWeather sign up page](https://home.openweathermap.org/users/sign_up) to create an account and request an API key.
+3. create a file called .env inside the server folder. Add two variables to the file:
+    - API_BASE_URL=https://api.openweathermap.org
+    - API_KEY={insert your API key here}
 3. Install dependencies by running the command *npm install* in the root directory using the integrated terminal.
-4. **CHECK THIS!!!!!!!!!!!!** Navigate to the src file in the integrated terminal and run the *npm start* command to run the application.
+4.  use the integrated terminal at the root directory of the project and run the *npm run start:dev* command to run the application.
 5.  Open your web browser and navigate to http://localhost:3000 to access the application.
 
 ## Usage
 To use this Weather Dashboard application, follow these steps:
 
 1. Launch the Application: 
--  **If running the application locally:** Open your web browser and navigate to http://localhost:3000 to access the application.
-- **If running the application as deployed on Render:** 
+    - **If running the application locally:** Open your web browser and navigate to http://localhost:3000 to access the application.
+    - **If running the application as deployed on Render:** Visit https://weather-dashboard-ktb0.onrender.com/.
 
 2. Search for Weather Data:
-- In the search input field, enter the name of the city for which you want to retrieve weather data.
-- Click the "Search" button or press "Enter" to submit your search.
+    - In the search input field, enter the name of the city for which you want to retrieve weather data.
+    - Click the "Search" button or press "Enter" to submit your search.
 
 3. View Current Weather:
-- The application will display the current weather conditions for the searched city, including temperature, wind speed, humidity, and an icon representing the weather.
+    - The application will display the current weather conditions for the searched city, including temperature, wind speed, humidity, and an icon representing the weather.
 
 4. View 5-Day Forecast:
-- Below the current weather conditions, the application will display a 5-day weather forecast for the searched city, including daily temperature, wind speed, humidity, and weather icons.
+    - Below the current weather conditions, the application will display a 5-day weather forecast for the searched city, including daily temperature, wind speed, humidity, and weather icons.
 
 5. Search History:
-- The application maintains a search history of previously searched cities.
-- Click on any city in the search history to quickly retrieve and display its weather data again.
+    - The application maintains a search history of previously searched cities.
+    - Click on any city in the search history to quickly retrieve and display its weather data again.
 
 6. Delete Search History:
-- To delete a city from the search history, click the delete button (represented by a trash can icon) next to the city name in the search history list.
+    - To delete a city from the search history, click the delete button (represented by a trash can icon) next to the city name in the search history list.
 
 7. Error Handling:
-If an error occurs while fetching weather data (e.g., invalid city name or network issues), an error message will be displayed in the console, and the application will not render weather data with undefined values.
+    - If an error occurs while fetching weather data (e.g., invalid city name or network issues), an error message will be displayed in the console, and the application will not render weather data with undefined values.
 
 ## Tests
 Currently, there are no unit tests. The functionality can be tested by typing both valid and invalid city names into the search bar.
@@ -154,5 +164,35 @@ It also helped me realize that I was not preserving the ids of City objects when
 
 
 ## Screenshots
+![Image of the app running in a browser just after it has been launched. The heading says weather dashboard. The left side of the screen has a search bar with a list of the following cities below it Austin, New York, portland, Seattle. The right side of the screen shows a box. The top of the box says Search for a city in big letters. Below it is text indicating entries for temperature in farenheight, wind in miles per hour, humidity as a percentage. These fields contain no data.](./assets/screenshots/weather-dashboard-on-launch.jpg)
+
+**Image depicting the appearance of the app upon launch with no cities selected.**
+
+
+![Image of a weather dashboard app running in a browser. The left side features a search bar with a list of cities: Ashland, Austin, New York, Portland, and Seattle (with Ashland now at the top). On the right, a box displays 'Ashland' with the current date (11/20/2024), a cloud icon representing the weather, and details such as temperature, wind speed, and humidity. Below it, a 'Five-Day Forecast' heading appears above five smaller blue boxes, each showing similar details for the subsequent five days. At the bottom of the browser window, the console is open, showing logged data labeled 'weatherData.](./assets/screenshots/weather-dashboard-new-city.jpg)
+
+**Image depicting the addition of a new city (Ashland) to the cities list, along with the city's current weather condtions and a five day forecast.**
+
+
+![Image of the app running in a browser. The heading says weather dashboard. The left side of the screen has a search bar with a list of the following cities below it Ashland, Austin, New York, portland, Seattle. On the right, a box displays 'New York' with the current date (11/20/2024), a cloud icon representing the weather, and details such as temperature, wind speed, and humidity. Below it, a 'Five-Day Forecast' heading appears above five smaller blue boxes, each showing similar details for the subsequent five days.](./assets/screenshots/weather-dashboard-select-existing-city.jpg)
+
+**Image depicting the weather information for New York upon selecting it from the saved cities list.**
+
+
+![Screenshot of a weather dashboard web application displayed in a browser. The page is divided into two main sections. On the left, a sidebar contains a search bar labeled 'Search for a City,' with a text input field, a 'Search' button, and a list of cities: Ashland, Austin, New York, and Portland, each with a red delete icon. The city of Seattle is no longer on the list, indicating it was recently deleted. On the right, the main content area displays the selected city's weather data in a white box. The heading reads 'New York (11/20/2024)' with a cloud icon next to it. Below are details: temperature (39.04°F), wind speed (7.85 MPH), and humidity (54%). Beneath this box is a heading labeled '5-Day Forecast,' followed by five smaller blue boxes displaying weather forecasts for subsequent days, including dates, icons representing weather conditions, temperature, wind speed, and humidity levels. At the bottom of the browser window, the console is open, showing logged data labeled 'weatherData'](./assets/screenshots/weather-dashboard-seattle-deleted.jpg)
+
+**Image depicting weather information, but with the city of Seattle missing from the saved cities list.**
+
+
+![Screenshot of a weather dashboard web application displayed in a browser. The page is divided into two sections. On the left, a sidebar labeled 'Search for a City' contains a text input field, a 'Search' button, and a list of cities: Ashland, Austin, New York, and Portland, each with a red delete icon. Seattle is missing from the list, indicating it has been deleted. On the right, the main area displays a white box with the selected city's weather data. The heading reads 'New York (11/20/2024)' with a cloud icon next to it. Below are details: temperature (39.04°F), wind speed (7.85 MPH), and humidity (54%). Beneath this box is a '5-Day Forecast' section with five blue boxes showing weather forecasts for the next five days, each including a date, a weather icon, temperature, wind speed, and humidity. The browser's console is open at the bottom, showing error messages, including a 500 Internal Server Error for a POST request to the API and a custom error message: 'Error fetching weather data: Error: Failed to fetch weather data for e'.](./assets/screenshots/weather-dashboard-invalid-data-custom-error.jpg)
+
+**Image depicting a custom console error after entering "e" into the search bar instead of a valid city name.**
+
 
 ## Render Deployed Version
+[Click here](https://weather-dashboard-ktb0.onrender.com/) to view the app as deployed on Render.
+
+*Note: since it is being hosted on a free tier, it will take a while for the app to load when opening it for the first time.*
+
+--- 
+**[Back to Top](#weather-dashboard)**
