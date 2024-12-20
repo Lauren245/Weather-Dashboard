@@ -5,7 +5,7 @@ import {fileURLToPath} from 'url';
 const __fileName = fileURLToPath(import.meta.url);
 const __dirName = path.dirname(__fileName);
 
-// TODO: Define a City class with name and id properties
+// DONE: Define a City class with name and id properties
 class City {
   //I want Id to be private since it is going to be used to be used as a unique identifier
   private id: string;
@@ -28,7 +28,7 @@ class City {
   }
 }
 
-// TODO: Complete the HistoryService class
+// DONE: Complete the HistoryService class
 class HistoryService{
   city: City;
   
@@ -36,7 +36,7 @@ class HistoryService{
     this.city = new City("");   
   }
   
-  // TODO: Define a read method that reads from the searchHistory.json file
+  // DONE: Define a read method that reads from the searchHistory.json file
   private async read() {
     try{
       const fileData = await fsPromises.readFile(path.resolve(__dirName, "../../db/db.json"), "utf-8");
@@ -48,7 +48,7 @@ class HistoryService{
       return null;
     }
   };
-  // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
+  // DONE: Define a write method that writes the updated cities array to the searchHistory.json file
   private async write(cities: City[]) {
     try{
       await fsPromises.writeFile(path.resolve(__dirName, "../../db/db.json"), JSON.stringify(cities));
@@ -58,7 +58,7 @@ class HistoryService{
       console.error(`\n Error caught in write method catch block: ${error}`);
     }
   }
-  // TODO: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
+  // DONE: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
   async getCities() {
     try{
       const data = await this.read();
@@ -73,7 +73,6 @@ class HistoryService{
       }
 
       //convert JSON string into an array of usable objects.
-      //const cities: City[] = JSON.parse(data.toString());
       const cities = citiesData.map((item: any) => new City(item.name, item.id));
       return cities;
 
@@ -89,7 +88,7 @@ class HistoryService{
 
   }
 
-  // TODO Define an addCity method that adds a city to the searchHistory.json file
+  // DONE Define an addCity method that adds a city to the searchHistory.json file
   async addCity(city: string) {
     try{
       //create a new city object
@@ -116,7 +115,6 @@ class HistoryService{
       }     
     }catch(error){
       if(error instanceof Error){
-        //console.error('add city encountered an error. Message: ', error.message);
         console.error(`\n Error caught in addCity method catch block: ${error.stack}`);
       }
       else{
@@ -124,7 +122,7 @@ class HistoryService{
       }
     }
   }
-  // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
+  // * BONUS DONE: Define a removeCity method that removes a city from the searchHistory.json file
   async removeCity(id: string) { 
     try{
       console.log(`id passed in ${id}.`);

@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 //import { json } from 'node:stream/consumers';
 dotenv.config();
 
-// TODO: Define an interface for the Coordinates object
+// DONE: Define an interface for the Coordinates object
 interface Coordinates {
   lon: string;
   lat: string;
 };
-// TODO: Define a class for the Weather object
+// DONE: Define a class for the Weather object
 class Weather{
   //city, date, icon, iconDescription, tempF, windSpeed, humidity
   city: string;
@@ -30,9 +30,9 @@ class Weather{
 
 };
 
-// TODO: Complete the WeatherService class
+// DONE: Complete the WeatherService class
 class WeatherService{
-  // TODO: Define the baseURL, API key, and city name properties
+  // DONE: Define the baseURL, API key, and city name properties
   baseURL: string;
   APIKey: string;
   cityName: string;
@@ -41,7 +41,7 @@ class WeatherService{
     this.APIKey = process.env.API_KEY || "";
     this.cityName = "";
   };
-  // TODO: Create fetchLocationData method
+  // DONE: Create fetchLocationData method
   private async fetchLocationData(query: string) {
     try{
       //console.log("running fetchLocationData method");
@@ -49,7 +49,7 @@ class WeatherService{
 
       console.log(` \n API call returned with status: ${response.status}: ${response.statusText}`);
 
-      //TODO: update this so the response is checking for more specific error codes.
+      //DONE: update this so the response is checking for more specific error codes.
       if(!response.ok){
         throw new Error(`Could not find weather data for "${this.cityName}".`);
       }
@@ -75,9 +75,14 @@ class WeatherService{
     //returns a raw response from the geocode API
       
   }
-  // TODO: Create destructureLocationData method
+  // DONE: Create destructureLocationData method
   private destructureLocationData(locationData: Coordinates): Coordinates {
-    //TODO: figure out a better way to use this method since it is redundant
+    /*!!! NOTE: Since the method stub we were provided for this method 
+    requires location data to be of type Coordinates before it is passed into this
+    method; it means that there is nothing for this method to do. I added a try/catch block,
+    but since locationData is passed in as coordinates, and the method that generates
+    those coordinates will return null if the API call fails, which will throw to the
+    try/catch block in fetchAndRestructure data and completely bypasses calling this method.*/
     try{
       console.log("\n running destructureLocationData method");
 
@@ -101,21 +106,21 @@ class WeatherService{
     }
   }
 
-  // TODO: Create buildGeocodeQuery method
+  // DONE: Create buildGeocodeQuery method
   private buildGeocodeQuery(): string {
     console.log("\n running buildGeocodeQuery method");
 
     return `q=${this.cityName}&appid=${this.APIKey}&units=imperial`;
   }
 
-  // TODO: Create buildWeatherQuery method
+  // DONE: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
     console.log("\n running buildWeatherQuery method");
 
     return `lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${this.APIKey}&units=imperial`;
   }
 
-  // TODO: Create fetchAndDestructureLocationData method
+  // DONE: Create fetchAndDestructureLocationData method
   private async fetchAndDestructureLocationData() {
     try{
       console.log("\n running fetchAndDestructureLocationData method");
@@ -138,7 +143,7 @@ class WeatherService{
     }
   }
 
-  // TODO: Create fetchWeatherData method
+  // DONE: Create fetchWeatherData method
   private async fetchWeatherData(coordinates: Coordinates) {
     try{
       console.log("\n running fetchWeatherData method");
@@ -169,7 +174,7 @@ class WeatherService{
     }
     
   }
-  // TODO: Build parseCurrentWeather method
+  // DONE: Build parseCurrentWeather method
   private parseCurrentWeather(response: any) {
     try{
         console.log("\n running parseCurrentWeather method");
@@ -189,14 +194,12 @@ class WeatherService{
 
     }catch(error){
       console.error(`\n Error caught in parseCurrentWeatherMethod catch block: ${error}`);
-      //Throw error again to avoid returning a value here.
-      //throw error;
       return null;
     }
 
   }
 
-  // TODO: Complete buildForecastArray method
+  // DONE: Complete buildForecastArray method
     private buildForecastArray(currentWeather: Weather, weatherData: any[]) {
       console.log(" \n running buildForecastArray method");
       try{
@@ -227,7 +230,7 @@ class WeatherService{
         throw error
       }
     }
-  // TODO: Complete getWeatherForCity method
+  // DONE: Complete getWeatherForCity method
   async getWeatherForCity(city: string) {
     try{
         console.log("\n running getWeatherForCity method");
